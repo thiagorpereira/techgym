@@ -4,6 +4,10 @@ import {
   Roboto_400Regular,
   Roboto_700Bold
 } from "@expo-google-fonts/roboto"
+import { GluestackUIProvider } from '@gluestack-ui/themed'
+import { config } from './config/gluestack-ui.config'
+import { Loading } from '@components/Loading'
+import { Routes } from '@routes/index'
 
 
 export default function App() {
@@ -11,20 +15,14 @@ export default function App() {
 
 
   return (
-    <View 
-      style={{ 
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "#202024"
-      }}
-    >
+    <GluestackUIProvider config={config}>
       <StatusBar
         barStyle="light-content"
         backgroundColor="transparent"
         translucent
       />
-      { fontsLoaded ? <Text style={{fontFamily: "Roboto_700Bold", fontSize: 44}}>God is good</Text> : <View/> }
-    </View>
+
+    {fontsLoaded ? <Routes /> : <Loading />}
+  </GluestackUIProvider>
   );
 }
