@@ -16,7 +16,6 @@ import * as yup from 'yup'
 import { useNavigation } from '@react-navigation/native'
 
 import BackgroundImg from '@assets/background.png'
-import Logo from '@assets/logo.svg'
 
 import {api} from '@services/api'
 import { Button } from '@components/Button'
@@ -114,8 +113,9 @@ export function SignUp() {
 
         <VStack flex={1} px="$10" pb="$16">
           <Center my="$24">
-            <Logo />
-
+            <Heading color="$gray100">
+              Tech Gym
+            </Heading>
             <Text color="$gray100" fontSize="$sm">
               Treine sua mente e seu corpo
             </Text>
