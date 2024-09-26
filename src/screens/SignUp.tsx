@@ -8,43 +8,42 @@ import {
   ToastDescription,
   ToastTitle,
   VStack,
-  useToast
-} from '@gluestack-ui/themed'
-import { yupResolver } from '@hookform/resolvers/yup'
-import * as yup from 'yup'
+  useToast,
+} from "@gluestack-ui/themed";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
 
-import { useNavigation } from '@react-navigation/native'
+import { useNavigation } from "@react-navigation/native";
 
-import BackgroundImg from '@assets/background.png'
+import BackgroundImg from "@assets/background.png";
 
-import {api} from '@services/api'
-import { Button } from '@components/Button'
-import { Input } from '@components/Input'
-import { Controller, useForm } from 'react-hook-form'
-import { AppError } from '@utils/AppError'
+import { api } from "@services/api";
+import { Button } from "@components/Button";
+import { Input } from "@components/Input";
+import { Controller, useForm } from "react-hook-form";
+import { AppError } from "@utils/AppError";
 
 type FormDataProps = {
-  name: string
-  email: string
-  password: string
-  password_confirm: string
-}
+  name: string;
+  email: string;
+  password: string;
+  password_confirm: string;
+};
 
 const signUpSchema = yup.object({
-  name: yup.string().required('Informe o nome.'),
-  email: yup.string().required('Informe o e-mail.').email('E-mail inválido.'),
+  name: yup.string().required("Informe o nome."),
+  email: yup.string().required("Informe o e-mail.").email("E-mail inválido."),
   password: yup
     .string()
-    .required('Informe a senha.')
-    .min(6, 'A senha deve ter pelo menos seis dígitos.'),
+    .required("Informe a senha.")
+    .min(6, "A senha deve ter pelo menos seis dígitos."),
   password_confirm: yup
     .string()
-    .required('Confirme a senha')
-    .oneOf([yup.ref('password'), ''], 'A confirmação da senha não confere.'),
-})
+    .required("Confirme a senha")
+    .oneOf([yup.ref("password"), ""], "A confirmação da senha não confere."),
+});
 
 export function SignUp() {
-
   const toast = useToast();
 
   const {
@@ -53,35 +52,45 @@ export function SignUp() {
     formState: { errors },
   } = useForm<FormDataProps>({
     resolver: yupResolver(signUpSchema),
-  })
+  });
 
-  const navigation = useNavigation()
+  const navigation = useNavigation();
 
   function handleGoBack() {
-    navigation.goBack()
+    navigation.goBack();
   }
 
-  async function handleSignUp({
-    name,
-    email,
-    password,
-  }: FormDataProps) {
-
-    console.log("CHEGOU")
+  async function handleSignUp({ name, email, password }: FormDataProps) {
+    console.log("CHEGOU");
     try {
-      const response = await api.post('/users', { name, email, password });
+      const response = await api.post("/users", { name, email, password });
       console.log(response.data);
-    } catch(error) {
+      toast.show({
+        placement: "top",
+        duration: 3000,
+        render: ({ id }) => {
+          const uniqueToastId = "toast-" + id;
+          return (
+            <Toast nativeID={uniqueToastId} variant="solid">
+              <ToastTitle>Usuário cadastrado com sucesso</ToastTitle>
+            </Toast>
+          );
+        },
+      });
+      handleGoBack();
+    } catch (error) {
       const isAppError = error instanceof AppError;
 
-      const title = isAppError ? error.message : 'Não foi possível criar a conta. Tente novamente mais tarde';
-      console.log("title!!", title)
+      const title = isAppError
+        ? error.message
+        : "Não foi possível criar a conta. Tente novamente mais tarde";
+      console.log("title!!", title);
 
       toast.show({
         placement: "top",
         duration: 3000,
         render: ({ id }) => {
-          const uniqueToastId = "toast-" + id
+          const uniqueToastId = "toast-" + id;
           return (
             <Toast nativeID={uniqueToastId} variant="solid">
               <ToastTitle>{title}</ToastTitle>
@@ -89,11 +98,10 @@ export function SignUp() {
                 {title}
               </ToastDescription> */}
             </Toast>
-          )
+          );
         },
-      })
+      });
     }
-
   }
 
   return (
@@ -113,9 +121,7 @@ export function SignUp() {
 
         <VStack flex={1} px="$10" pb="$16">
           <Center my="$24">
-            <Heading color="$gray100">
-              Tech Gym
-            </Heading>
+            <Heading color="$gray100">Tech Gym</Heading>
             <Text color="$gray100" fontSize="$sm">
               Treine sua mente e seu corpo
             </Text>
@@ -197,5 +203,5 @@ export function SignUp() {
         </VStack>
       </VStack>
     </ScrollView>
-  )
+  );
 }
